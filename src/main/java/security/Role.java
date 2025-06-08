@@ -1,4 +1,6 @@
 package security;
 
-public class Role {
+public enum Role {
+    STUDENT,
+    TEACHER
 }

@@ -1,0 +1,13 @@
+[2025-05-24T20:08:46.086938] лщыенф kostya (STUDENT): ERROR | Only teachers can perform this action.
+[2025-05-24T20:10:25.494088] лщыенф kostya (STUDENT): EXIT | Exiting application
+[2025-05-24T20:12:19.349924] kostya ilyin kostya (STUDENT): ERROR | Students can't assign tokens to new students.
+[2025-05-24T20:15:26.080285] 1 1 (STUDENT): ADD | 1 1
+[2025-05-24T20:15:38.103728] 1 1 (STUDENT): ERROR | Only teachers can perform this action.
+[2025-05-24T20:16:00.185308] 1 1 (STUDENT): ERROR | For input string: "+"
+[2025-05-24T20:17:44.907992] 1 1 (STUDENT): ADD | 1 1
+[2025-05-24T20:17:49.889413] 1 1 (STUDENT): EXIT | Exited application
+[2025-05-24T20:20:33.560628] 1 1 (STUDENT): ADD | 1 1
+[2025-05-24T20:20:43.561726] 1 1 (STUDENT): EXIT | Exited application
+[2025-05-24T20:22:37.673734] kostya ilyin (STUDENT): ADD | kostya ilyin
+[2025-05-24T20:23:11.761210] kostya ilyin (STUDENT): ADD | regina smirnova
+[2025-05-24T20:26:06.920040] kostya ilyin (STUDENT): ADD | regina smirnova

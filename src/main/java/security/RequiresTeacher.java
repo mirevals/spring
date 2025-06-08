@@ -1,4 +1,7 @@
 package security;
 
-public class RequiresTeacher {
-}
+import java.lang.annotation.*;
+
+@Target(ElementType.METHOD)
+@Retention(RetentionPolicy.RUNTIME)
+public @interface RequiresTeacher {}
