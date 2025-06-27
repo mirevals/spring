@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Token Management API</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+        }
+        .endpoint {
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 15px;
+            margin: 10px 0;
+            background-color: #f9f9f9;
+        }
+        .method {
+            font-weight: bold;
+            color: #007bff;
+        }
+        .url {
+            font-family: monospace;
+            background-color: #e9ecef;
+            padding: 2px 6px;
+            border-radius: 3px;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .response {
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            padding: 10px;
+            margin-top: 10px;
+            font-family: monospace;
+            white-space: pre-wrap;
+        }
+        input, select {
+            padding: 8px;
+            margin: 5px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        .form-group {
+            margin: 10px 0;
+        }
+        label {
+            display: inline-block;
+            width: 120px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <h1>Student Token Management API</h1>
+    
+    <div class="container">
+        <h2>API Status</h2>
+        <div class="endpoint">
+            <span class="method">GET</span> <span class="url">/api/v1/getStatus</span>
+            <button onclick="checkStatus()">Check Status</button>
+            <div id="statusResponse" class="response"></div>
+        </div>
+    </div>
+
+    <div class="container">
+        <h2>Students Management</h2>
+        
+        <div class="endpoint">
+            <span class="method">GET</span> <span class="url">/api/v1/students</span>
+            <button onclick="getAllStudents()">Get All Students</button>
+            <div id="studentsResponse" class="response"></div>
+        </div>
+
+        <div class="endpoint">
+            <span class="method">GET</span> <span class="url">/api/v1/students/{id}</span>
+            <div class="form-group">
+                <label>Student ID:</label>
+                <input type="number" id="studentId" value="1">
+                <button onclick="getStudentById()">Get Student by ID</button>
+            </div>
+            <div id="studentByIdResponse" class="response"></div>
+        </div>
+
+        <div class="endpoint">
+            <span class="method">GET</span> <span class="url">/api/v1/students/search</span>
+            <div class="form-group">
+                <label>First Name:</label>
+                <input type="text" id="searchFirstName" value="John">
+                <label>Last Name:</label>
+                <input type="text" id="searchLastName" value="Doe">
+                <button onclick="searchStudent()">Search Student</button>
+            </div>
+            <div id="searchResponse" class="response"></div>
+        </div>
+    </div>
+
+    <div class="container">
+        <h2>Student Operations</h2>
+        
+        <div class="endpoint">
+            <span class="method">POST</span> <span class="url">/api/v1/students</span>
+            <div class="form-group">
+                <label>First Name:</label>
+                <input type="text" id="addFirstName" value="New">
+                <label>Last Name:</label>
+                <input type="text" id="addLastName" value="Student">
+                <label>User Role:</label>
+                <select id="addUserRole">
+                    <option value="STUDENT">STUDENT</option>
+                    <option value="TEACHER">TEACHER</option>
+                </select>
+                <button onclick="addStudent()">Add Student</button>
+            </div>
+            <div id="addStudentResponse" class="response"></div>
+        </div>
+
+        <div class="endpoint">
+            <span class="method">POST</span> <span class="url">/api/v1/students/tokens</span>
+            <div class="form-group">
+                <label>First Name:</label>
+                <input type="text" id="tokenFirstName" value="John">
+                <label>Last Name:</label>
+                <input type="text" id="tokenLastName" value="Doe">
+                <label>User Role:</label>
+                <select id="tokenUserRole">
+                    <option value="STUDENT">STUDENT</option>
+                    <option value="TEACHER">TEACHER</option>
+                </select>
+                <label>Token Change:</label>
+                <input type="number" id="tokenChange" value="5">
+                <button onclick="updateTokens()">Update Tokens</button>
+            </div>
+            <div id="updateTokensResponse" class="response"></div>
+        </div>
+
+        <div class="endpoint">
+            <span class="method">DELETE</span> <span class="url">/api/v1/students</span>
+            <div class="form-group">
+                <label>First Name:</label>
+                <input type="text" id="deleteFirstName" value="John">
+                <label>Last Name:</label>
+                <input type="text" id="deleteLastName" value="Doe">
+                <label>User Role:</label>
+                <select id="deleteUserRole">
+                    <option value="STUDENT">STUDENT</option>
+                    <option value="TEACHER">TEACHER</option>
+                </select>
+                <button onclick="removeStudent()">Remove Student</button>
+            </div>
+            <div id="removeStudentResponse" class="response"></div>
+        </div>
+    </div>
+
+    <script>
+        const baseUrl = '/api/v1';
+
+        async function makeRequest(url, options = {}) {
+            try {
+                const response = await fetch(baseUrl + url, {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        ...options.headers
+                    },
+                    ...options
+                });
+                const data = await response.json();
+                return { success: true, data, status: response.status };
+            } catch (error) {
+                return { success: false, error: error.message };
+            }
+        }
+
+        function displayResponse(elementId, result) {
+            const element = document.getElementById(elementId);
+            if (result.success) {
+                element.textContent = JSON.stringify(result.data, null, 2);
+            } else {
+                element.textContent = 'Error: ' + result.error;
+            }
+        }
+
+        async function checkStatus() {
+            const result = await makeRequest('/getStatus');
+            displayResponse('statusResponse', result);
+        }
+
+        async function getAllStudents() {
+            const result = await makeRequest('/students');
+            displayResponse('studentsResponse', result);
+        }
+
+        async function getStudentById() {
+            const id = document.getElementById('studentId').value;
+            const result = await makeRequest(`/students/${id}`);
+            displayResponse('studentByIdResponse', result);
+        }
+
+        async function searchStudent() {
+            const firstName = document.getElementById('searchFirstName').value;
+            const lastName = document.getElementById('searchLastName').value;
+            const result = await makeRequest(`/students/search?firstName=${firstName}&lastName=${lastName}`);
+            displayResponse('searchResponse', result);
+        }
+
+        async function addStudent() {
+            const firstName = document.getElementById('addFirstName').value;
+            const lastName = document.getElementById('addLastName').value;
+            const userRole = document.getElementById('addUserRole').value;
+            
+            const result = await makeRequest('/students', {
+                method: 'POST',
+                body: JSON.stringify({ firstName, lastName, userRole })
+            });
+            displayResponse('addStudentResponse', result);
+        }
+
+        async function updateTokens() {
+            const firstName = document.getElementById('tokenFirstName').value;
+            const lastName = document.getElementById('tokenLastName').value;
+            const userRole = document.getElementById('tokenUserRole').value;
+            const tokenChange = parseInt(document.getElementById('tokenChange').value);
+            
+            const result = await makeRequest('/students/tokens', {
+                method: 'POST',
+                body: JSON.stringify({ firstName, lastName, userRole, tokenChange })
+            });
+            displayResponse('updateTokensResponse', result);
+        }
+
+        async function removeStudent() {
+            const firstName = document.getElementById('deleteFirstName').value;
+            const lastName = document.getElementById('deleteLastName').value;
+            const userRole = document.getElementById('deleteUserRole').value;
+            
+            const result = await makeRequest('/students', {
+                method: 'DELETE',
+                body: JSON.stringify({ firstName, lastName, userRole })
+            });
+            displayResponse('removeStudentResponse', result);
+        }
+
+        // Check status on page load
+        window.onload = function() {
+            checkStatus();
+        };
+    </script>
+</body>
+</html> 

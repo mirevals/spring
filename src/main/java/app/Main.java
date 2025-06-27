@@ -2,9 +2,8 @@ package app;
 
 import config.AppConfig;
 import model.Student;
+import model.UserRole;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-import security.Role;
-import security.RoleContext;
 import service.ActionLogService;
 import service.StudentService;
 
@@ -25,8 +24,7 @@ public class Main {
         System.out.print("Enter role (student / teacher): ");
         String roleInput = scanner.nextLine().trim().toLowerCase();
 
-        Role role = roleInput.equals("teacher") ? Role.TEACHER : Role.STUDENT;
-        RoleContext.setRole(role);
+        UserRole role = roleInput.equals("teacher") ? UserRole.TEACHER : UserRole.STUDENT;
         String actor = fname + " " + lname;
 
         System.out.println("Choose action: [add / remove / tokens / exit]");
@@ -41,16 +39,16 @@ public class Main {
                         System.out.print("New student last name: ");
                         String newLName = scanner.nextLine();
                         // Добавляем студента с 0 токенов
-                        studentService.addStudent(new Student(0, newFName, newLName, 0));
-                        logService.log(actor, role.name(), "ADD", newFName + " " + newLName);
+                        studentService.addStudent(new Student(0, newFName, newLName, 0), role);
+                        logService.log(actor, role.getValue(), "ADD", newFName + " " + newLName);
                         break;
                     case "remove":
                         System.out.print("Remove student first name: ");
                         String rmF = scanner.nextLine();
                         System.out.print("Last name: ");
                         String rmL = scanner.nextLine();
-                        studentService.removeStudent(rmF, rmL);
-                        logService.log(actor, role.name(), "REMOVE", rmF + " " + rmL);
+                        studentService.removeStudent(rmF, rmL, role);
+                        logService.log(actor, role.getValue(), "REMOVE", rmF + " " + rmL);
                         break;
                     case "tokens":
                         System.out.print("Target first name: ");
@@ -59,19 +57,18 @@ public class Main {
                         String tl = scanner.nextLine();
                         System.out.print("Token change (+/-): ");
                         int delta = Integer.parseInt(scanner.nextLine());
-                        studentService.changeTokens(tf, tl, delta);
-                        logService.log(actor, role.name(), "CHANGE_TOKENS", tf + " " + tl + " (" + delta + ")");
+                        studentService.changeTokens(tf, tl, delta, role);
+                        logService.log(actor, role.getValue(), "CHANGE_TOKENS", tf + " " + tl + " (" + delta + ")");
                         break;
                     case "exit":
-                        RoleContext.clear();
-                        logService.log(actor, role.name(), "EXIT", "Exited application");
+                        logService.log(actor, role.getValue(), "EXIT", "Exited application");
                         return;
                     default:
                         System.out.println("Unknown command.");
                 }
             } catch (Exception e) {
                 System.out.println("Error: " + e.getMessage());
-                logService.log(actor, role.name(), "ERROR", e.getMessage());
+                logService.log(actor, role.getValue(), "ERROR", e.getMessage());
             }
         }
     }
