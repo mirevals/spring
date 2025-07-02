@@ -12,10 +12,10 @@ repositories {
 
 dependencies {
     // Spring MVC
-    implementation("org.springframework:spring-context:6.1.5")
+    implementation("org.springframework:spring-context:6.2.7")
     implementation("org.springframework:spring-core:6.1.5")
-    implementation("org.springframework:spring-web:6.1.5")
-    implementation("org.springframework:spring-webmvc:6.1.5")
+    implementation("org.springframework:spring-web:6.2.8")
+    implementation("org.springframework:spring-webmvc:6.1.14")
     
     // Servlet API
     compileOnly("javax.servlet:javax.servlet-api:4.0.1")

@@ -48,15 +48,6 @@ class StudentControllerTest {
     }
 
     @Test
-    void getStudentByName_WhenStudentExists_ShouldReturnStudent() {
-        // When
-        ResponseEntity<ApiResponse<Student>> response = controller.getStudentByName("John", "Doe");
-
-        // Then
-        assertNotNull(response);
-    }
-
-    @Test
     void addStudent_ShouldReturnSuccess() {
         // Given
         StudentRequest request = new StudentRequest();

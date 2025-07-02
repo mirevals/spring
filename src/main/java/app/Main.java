@@ -38,27 +38,22 @@ public class Main {
                         String newFName = scanner.nextLine();
                         System.out.print("New student last name: ");
                         String newLName = scanner.nextLine();
-                        // Добавляем студента с 0 токенов
-                        studentService.addStudent(new Student(0, newFName, newLName, 0), role);
+                        studentService.addStudent(new Student(0, newFName, newLName, 0));
                         logService.log(actor, role.getValue(), "ADD", newFName + " " + newLName);
                         break;
                     case "remove":
-                        System.out.print("Remove student first name: ");
-                        String rmF = scanner.nextLine();
-                        System.out.print("Last name: ");
-                        String rmL = scanner.nextLine();
-                        studentService.removeStudent(rmF, rmL, role);
-                        logService.log(actor, role.getValue(), "REMOVE", rmF + " " + rmL);
+                        System.out.print("Student ID to remove: ");
+                        int removeId = Integer.parseInt(scanner.nextLine());
+                        studentService.removeStudent(removeId);
+                        logService.log(actor, role.getValue(), "REMOVE", "ID " + removeId);
                         break;
                     case "tokens":
-                        System.out.print("Target first name: ");
-                        String tf = scanner.nextLine();
-                        System.out.print("Last name: ");
-                        String tl = scanner.nextLine();
+                        System.out.print("Student ID to modify tokens: ");
+                        int id = Integer.parseInt(scanner.nextLine());
                         System.out.print("Token change (+/-): ");
                         int delta = Integer.parseInt(scanner.nextLine());
-                        studentService.changeTokens(tf, tl, delta, role);
-                        logService.log(actor, role.getValue(), "CHANGE_TOKENS", tf + " " + tl + " (" + delta + ")");
+                        studentService.changeTokens(id, delta);
+                        logService.log(actor, role.getValue(), "CHANGE_TOKENS", "ID " + id + " (" + delta + ")");
                         break;
                     case "exit":
                         logService.log(actor, role.getValue(), "EXIT", "Exited application");

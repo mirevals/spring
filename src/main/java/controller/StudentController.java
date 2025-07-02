@@ -1,7 +1,6 @@
 package controller;
 
 import model.Student;
-import model.UserRole;
 import model.dto.ApiResponse;
 import model.dto.StudentRequest;
 import model.dto.TokenUpdateRequest;
@@ -59,10 +58,9 @@ public class StudentController {
 
     @GetMapping("/students/search")
     public ResponseEntity<ApiResponse<Student>> getStudentByName(
-            @RequestParam String firstName,
-            @RequestParam String lastName) {
+            @RequestParam int id) {
         try {
-            Student student = studentService.getStudentByName(firstName, lastName);
+            Student student = studentService.getStudentById(id);
             
             if (student != null) {
                 return ResponseEntity.ok(ApiResponse.success("Student found", student));
@@ -77,14 +75,13 @@ public class StudentController {
     @PostMapping("/students")
     public ResponseEntity<ApiResponse<Student>> addStudent(@RequestBody StudentRequest request) {
         try {
-            UserRole userRole = UserRole.fromString(request.getUserRole());
-            
+
             Student newStudent = new Student();
             newStudent.setFirstName(request.getFirstName());
             newStudent.setLastName(request.getLastName());
-            newStudent.setTokens(0); // Новые студенты начинают с 0 жетонов
+            newStudent.setTokens(0);
 
-            studentService.addStudent(newStudent, userRole);
+            studentService.addStudent(newStudent);
             
             actionLogService.log(
                 request.getFirstName() + " " + request.getLastName(),
@@ -102,9 +99,8 @@ public class StudentController {
     @PostMapping("/students/tokens")
     public ResponseEntity<ApiResponse<String>> updateTokens(@RequestBody TokenUpdateRequest request) {
         try {
-            UserRole userRole = UserRole.fromString(request.getUserRole());
-            
-            studentService.changeTokens(request.getFirstName(), request.getLastName(), request.getTokenChange(), userRole);
+
+            studentService.changeTokens(request.getId(), request.getTokenChange() );
             
             actionLogService.log(
                 request.getFirstName() + " " + request.getLastName(),
@@ -122,9 +118,8 @@ public class StudentController {
     @DeleteMapping("/students")
     public ResponseEntity<ApiResponse<String>> removeStudent(@RequestBody StudentRequest request) {
         try {
-            UserRole userRole = UserRole.fromString(request.getUserRole());
-            
-            studentService.removeStudent(request.getFirstName(), request.getLastName(), userRole);
+
+            studentService.removeStudent(request.getId());
             
             actionLogService.log(
                 request.getFirstName() + " " + request.getLastName(),
